@@ -1,3 +1,4 @@
 /target
+*.ast
 *.i
 *.lex

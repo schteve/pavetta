@@ -2,12 +2,14 @@ use std::{fmt::Display, str};
 
 use anyhow;
 
+#[derive(Clone)]
 pub struct SourceLocation {
     pub index: (usize, usize),
     pub line: usize,
     pub col: usize,
 }
 
+#[derive(Clone, PartialEq)]
 pub enum TokenKind {
     // Symbols
     BraceOpen,
@@ -26,6 +28,7 @@ pub enum TokenKind {
     Constant(i32),
 }
 
+#[derive(Clone)]
 pub struct Token {
     pub kind: TokenKind,
     pub loc: SourceLocation,

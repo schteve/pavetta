@@ -6,7 +6,7 @@ use std::{
 
 use anyhow;
 
-use crate::lexer::Lexer;
+use crate::{lexer::Lexer, parser::Parser};
 
 #[derive(Clone, Copy)]
 pub enum Phase {
@@ -74,7 +74,17 @@ impl Compiler {
                 continue;
             }
 
-            // TODO: parse
+            let ast = Parser::new(tokens).parse_ast()?;
+            if self.pretty_print {
+                let path = filename.with_extension("ast");
+                let f = fs::File::create(path).expect("Failed to create file");
+                let mut file_writer = BufWriter::new(f);
+                writeln!(file_writer, "{ast:#?}")?;
+            }
+
+            if matches!(self.final_phase, Some(Phase::Parse)) {
+                continue;
+            }
 
             // TODO: codegen
         }

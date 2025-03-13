@@ -7,6 +7,7 @@ use crate::compiler::{Compiler, Phase};
 
 mod compiler;
 mod lexer;
+mod parser;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
