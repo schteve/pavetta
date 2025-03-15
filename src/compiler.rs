@@ -6,7 +6,7 @@ use std::{
 
 use anyhow;
 
-use crate::{asm, lexer::Lexer, parser::Parser};
+use crate::{asm, codegen_x86, lexer::Lexer, parser::Parser};
 
 #[derive(Clone, Copy)]
 pub enum Phase {
@@ -61,7 +61,7 @@ impl Compiler {
                 let mut curr_line = 0;
                 for token in &tokens {
                     for i in curr_line + 1..=token.loc.line {
-                        writeln!(file_writer, "")?;
+                        writeln!(file_writer)?;
                         write!(file_writer, "Line {i}: ")?;
                     }
                     curr_line = token.loc.line;
@@ -94,7 +94,12 @@ impl Compiler {
                 writeln!(file_writer, "{asm:#?}")?;
             }
 
-            // TODO: codegen
+            let code = codegen_x86::Codegen::new(&asm).emit()?;
+
+            let path = filename.with_extension("s");
+            let f = fs::File::create(path).expect("Failed to create file");
+            let mut file_writer = BufWriter::new(f);
+            write!(file_writer, "{}", code)?;
         }
 
         Ok(())

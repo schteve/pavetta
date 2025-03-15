@@ -7,6 +7,7 @@ use crate::compiler::{Compiler, Phase};
 
 mod asm;
 mod ast;
+mod codegen_x86;
 mod compiler;
 mod lexer;
 mod parser;
