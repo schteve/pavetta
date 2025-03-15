@@ -4,8 +4,6 @@ use std::{
     path::PathBuf,
 };
 
-use anyhow;
-
 use crate::{asm, codegen_x86, lexer::Lexer, parser::Parser};
 
 #[derive(Clone, Copy)]

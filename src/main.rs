@@ -1,6 +1,5 @@
 use std::{path::PathBuf, process::Command};
 
-use anyhow;
 use clap::Parser;
 
 use crate::compiler::{Compiler, Phase};

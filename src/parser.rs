@@ -1,5 +1,3 @@
-use anyhow;
-
 use crate::{
     ast,
     token::{Token, TokenKind},

@@ -1,7 +1,5 @@
 use std::fmt::Write;
 
-use anyhow;
-
 use crate::asm;
 
 const INDENT: &str = "    ";

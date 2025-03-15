@@ -1,7 +1,5 @@
 use std::str;
 
-use anyhow;
-
 use crate::token::{SourceLocation, Token, TokenKind};
 
 pub struct Lexer {
@@ -88,16 +86,16 @@ impl Lexer {
                     Some(TokenKind::Constant(constant))
                 }
 
-                x => return Err(anyhow::anyhow!("Invalid character: {} ({x})", x as char)),
+                x => return Err(anyhow::anyhow!("Invalid character: {x}")),
             };
 
             if let Some(k) = kind {
                 let token = Token {
                     kind: k,
                     loc: SourceLocation {
-                        index: (start_idx, end_idx),
+                        _index: (start_idx, end_idx),
                         line,
-                        col: start_idx - line_idx,
+                        _col: start_idx - line_idx,
                     },
                 };
                 tokens.push(token);

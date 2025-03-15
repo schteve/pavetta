@@ -2,9 +2,9 @@ use std::fmt::Display;
 
 #[derive(Clone)]
 pub struct SourceLocation {
-    pub index: (usize, usize),
+    pub _index: (usize, usize),
     pub line: usize,
-    pub col: usize,
+    pub _col: usize,
 }
 
 #[derive(Clone, PartialEq)]
