@@ -1,6 +1,9 @@
 use anyhow;
 
-use crate::lexer::{Token, TokenKind};
+use crate::{
+    ast,
+    token::{Token, TokenKind},
+};
 
 macro_rules! expect {
     ($self:ident, $kind:pat) => {
@@ -9,31 +12,14 @@ macro_rules! expect {
             if token.is_none() {
                 return Err(anyhow::anyhow!("Expected {}, found EOF", stringify!($kind)));
             } else {
-                return Err(anyhow::anyhow!("Expected {}, found {}", stringify!($kind), token.unwrap().kind));
+                return Err(anyhow::anyhow!(
+                    "Expected {}, found {}",
+                    stringify!($kind),
+                    token.unwrap().kind
+                ));
             }
         };
     };
-}
-
-#[derive(Debug)]
-pub struct Program {
-    pub function: Function,
-}
-
-#[derive(Debug)]
-pub struct Function {
-    pub ident: String,
-    pub stmt: Stmt,
-}
-
-#[derive(Debug)]
-pub struct Stmt {
-    pub expr: Expr,
-}
-
-#[derive(Debug)]
-pub struct Expr {
-    pub int: i32,
 }
 
 pub struct Parser {
@@ -61,20 +47,23 @@ impl Parser {
         t
     }
 
-    pub fn parse_ast(&mut self) -> anyhow::Result<Program> {
+    pub fn parse_ast(&mut self) -> anyhow::Result<ast::Program> {
         let program = self.parse_program()?;
         if let Some(next_tok) = self.peek() {
-            return Err(anyhow::anyhow!("Parse finished but some tokens were not consumed (next: {}", next_tok.kind));
+            return Err(anyhow::anyhow!(
+                "Parse finished but some tokens were not consumed (next: {}",
+                next_tok.kind
+            ));
         }
         Ok(program)
     }
 
-    fn parse_program(&mut self) -> anyhow::Result<Program> {
+    fn parse_program(&mut self) -> anyhow::Result<ast::Program> {
         let function = self.parse_function()?;
-        Ok(Program { function })
+        Ok(ast::Program { function })
     }
 
-    fn parse_function(&mut self) -> anyhow::Result<Function> {
+    fn parse_function(&mut self) -> anyhow::Result<ast::Function> {
         expect!(self, TokenKind::Int);
 
         let ident = self.parse_identifier()?;
@@ -88,23 +77,23 @@ impl Parser {
 
         expect!(self, TokenKind::BraceClose);
 
-        Ok(Function { ident, stmt })
+        Ok(ast::Function { ident, stmt })
     }
 
-    fn parse_statement(&mut self) -> anyhow::Result<Stmt> {
+    fn parse_statement(&mut self) -> anyhow::Result<ast::Stmt> {
         expect!(self, TokenKind::Return);
 
         let expr = self.parse_expr()?;
 
         expect!(self, TokenKind::Semicolon);
 
-        Ok(Stmt { expr })
+        Ok(ast::Stmt { expr })
     }
 
-    fn parse_expr(&mut self) -> anyhow::Result<Expr> {
+    fn parse_expr(&mut self) -> anyhow::Result<ast::Expr> {
         let int = self.parse_int()?;
 
-        Ok(Expr { int })
+        Ok(ast::Expr { int })
     }
 
     fn parse_identifier(&mut self) -> anyhow::Result<String> {

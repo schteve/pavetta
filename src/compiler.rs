@@ -6,7 +6,7 @@ use std::{
 
 use anyhow;
 
-use crate::{lexer::Lexer, parser::Parser};
+use crate::{asm, lexer::Lexer, parser::Parser};
 
 #[derive(Clone, Copy)]
 pub enum Phase {
@@ -84,6 +84,14 @@ impl Compiler {
 
             if matches!(self.final_phase, Some(Phase::Parse)) {
                 continue;
+            }
+
+            let asm = asm::Program::from(ast);
+            if self.pretty_print {
+                let path = filename.with_extension("asm");
+                let f = fs::File::create(path).expect("Failed to create file");
+                let mut file_writer = BufWriter::new(f);
+                writeln!(file_writer, "{asm:#?}")?;
             }
 
             // TODO: codegen

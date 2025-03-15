@@ -5,9 +5,12 @@ use clap::Parser;
 
 use crate::compiler::{Compiler, Phase};
 
+mod asm;
+mod ast;
 mod compiler;
 mod lexer;
 mod parser;
+mod token;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
